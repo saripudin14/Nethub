@@ -1,0 +1,103 @@
+digraph NetHubWorkflow {
+    // --- KONFIGURASI UTAMA ---
+    rankdir=TB; 
+    compound=true; 
+    nodesep=0.6;   
+    ranksep=0.7;   
+    fontname="Arial";
+
+    node [shape=rect, style="filled,rounded", fillcolor="white", penwidth=1.5, fontname="Arial", margin="0.2,0.1"];
+    edge [fontname="Arial", fontsize=9, color="#444444"];
+
+    // --- 1. CLUSTER USER/CLIENT (BIRU MUDA) ---
+    subgraph cluster_client {
+        label = " 💻 KOMPUTER PENGGUNA (CLIENT) ";
+        style = filled; color = "#d4e6f1"; fontcolor = "#154360"; fontsize=12; penwidth=2;
+
+        start [label="Mulai Aplikasi", shape=oval, fillcolor="#2980b9", fontcolor="white"];
+        login_form [label="Form Login\n(Input User/Pass)"];
+        room_select [label="Pilih Room\n(Misal: A-1)"];
+        
+        subgraph cluster_dashboard {
+            label = "Dashboard Utama"; style=filled; color="white";
+            chat_ui [label="💬 Tampilan Chat", shape=box3d, fillcolor="#aed6f1"];
+            
+            { rank=same; btn_msg; btn_game; btn_file; }
+            btn_msg [label="Kirim Pesan"];
+            btn_game [label="Gerakan Game"];
+            btn_file [label="Upload File"];
+        }
+    }
+
+    // --- 2. CLUSTER SERVER (HIJAU MUDA) ---
+    subgraph cluster_server {
+        label = " 🏢 SERVER PUSAT (LOGIC) ";
+        style = filled; color = "#d5f5e3"; fontcolor = "#186a3b"; fontsize=12; penwidth=2;
+
+        srv_auth [label="Cek Validasi\nPassword", shape=diamond, style="filled", fillcolor="#abebc6"];
+        
+        // --- LOGIC ROUTER ---
+        subgraph cluster_logic {
+            label = "Processing (Router)"; labelloc="b"; style=dashed; color="#27ae60"; fontcolor="#27ae60";
+            
+            srv_parse [label="Analisa Perintah", shape=hexagon, fillcolor="#ffffb3"];
+            logic_save [label="Simpan Data File", shape=rect, fontsize=10];
+            
+            // PERJELAS LOGIC PAKET DATA
+            logic_relay [label="FORMAT PAKET DATA\n(CMD | PENGIRIM | ISI)\nContoh: MSG|Budi|Halo", shape=component, style="filled", fillcolor="#d1f2eb", fontsize=10];
+        }
+
+        // --- LOGIC BROADCAST ---
+        subgraph cluster_broadcast {
+            label = "📢 Mekanisme Broadcast"; style=filled; color="#EAFAF1"; fontcolor="#e67e22";
+            
+            mem_clients [label="Daftar Koneksi Aktif\n(Memory Server)", shape=cylinder, fillcolor="#fad7a0", fontsize=10];
+            bc_filter [label="FILTER:\nCari User di Room Sama", shape=trapezium, fillcolor="#f5cba7", fontsize=10, fixedsize=true, width=2.5];
+            bc_exec [label="EKSEKUSI KIRIM\n(Looping socket.send)", shape=doubleoctagon, fillcolor="#f39c12", fontcolor="white", fontsize=10];
+        }
+    }
+
+    // --- 3. CLUSTER DATABASE (ABU-ABU) ---
+    subgraph cluster_storage {
+        label = " 💾 FILE SYSTEM ";
+        style = filled; color = "#ebedef"; fontcolor="#5d6d7e";
+
+        json_db [label="users.json", shape=cylinder, fillcolor="#f4d03f"];
+        file_db [label="Server Folder", shape=folder, fillcolor="#f4d03f"];
+    }
+
+    // --- MENGHUBUNGKAN ALUR (EDGES) ---
+    
+    // Login
+    start -> login_form;
+    login_form -> srv_auth [label="Kirim Credential"];
+    srv_auth -> json_db [dir=both, label="Cek DB", style="dashed"];
+    srv_auth -> login_form [label="Gagal", color="red", fontcolor="red"];
+    srv_auth -> room_select [label="Sukses", color="green", fontcolor="green"];
+
+    // App Flow
+    room_select -> chat_ui;
+    chat_ui -> btn_msg;
+    chat_ui -> btn_game;
+    chat_ui -> btn_file;
+
+    // Masuk Router
+    btn_msg -> srv_parse;
+    btn_game -> srv_parse;
+    btn_file -> srv_parse;
+
+    // Logic Percabangan
+    srv_parse -> logic_save [label="Upload"];
+    srv_parse -> logic_relay [label="Chat/Game"];
+    logic_save -> file_db;
+    logic_save -> logic_relay [label="Info Link"];
+
+    // Masuk ke Broadcast System
+    logic_relay -> bc_filter [label="Paket Jadi"];
+    mem_clients -> bc_filter [label="Ambil Data Client"];
+    
+    bc_filter -> bc_exec [label="List Target"];
+
+    // Balik ke Client
+    bc_exec -> chat_ui [label="Kirim Data via Jaringan", color="#e67e22", penwidth=2.5, style=bold, constraint=false];
+}

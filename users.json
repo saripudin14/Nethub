@@ -1,0 +1,18 @@
+{
+    "udin": {
+        "password": "8bb0cf6eb9b17d0f7d22b456f121257dc1254e1f01665370476383ea776df414",
+        "role": "user"
+    },
+    "carlitos": {
+        "password": "a847a6d5ab2d349a230cf4657a7db826493b19ef053d826cdce4d747f023d6a2",
+        "role": "user"
+    },
+    "budi": {
+        "password": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+        "role": "user"
+    },
+    "admin": {
+        "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+        "role": "admin"
+    }
+}
