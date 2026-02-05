@@ -50,17 +50,3 @@ files_metadata.json
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# LaTeX auxiliary files (if any)
-*.aux
-*.log
-*.out
-*.toc
-*.lof
-*.lot
-*.bbl
-*.blg
-*.synctex.gz
-*.fdb_latexmk
-*.fls
-*.pdf
