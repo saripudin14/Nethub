@@ -12,6 +12,7 @@ from config import HOST, PORT, COLORS
 from network_utils import SocketBuffer
 from game_window import TicTacToeWindow
 from ui_components import NetHubUI
+from ftp_browser import FTPBrowserWindow
 
 class NetHubApp:
     def __init__(self):
@@ -37,7 +38,9 @@ class NetHubApp:
         self.current_room = None
         self.running = True
         self.sock_buffer = SocketBuffer(self.client)
-        self.game_window = None 
+        self.game_window = None
+        self.ftp_window = None
+        self.stored_password = None  # Store password for FTP login 
 
         # UI Frames
         self.login_frame = ttk.Frame(self.root)
@@ -52,7 +55,8 @@ class NetHubApp:
                                   on_game=self.open_game, 
                                   on_upload=self.upload_file, 
                                   on_send=self.send_message,
-                                  on_emoji=self.open_emoji_picker)
+                                  on_emoji=self.open_emoji_picker,
+                                  on_ftp=self.open_ftp)
 
         # Start with Login
         self.show_frame(self.login_frame)
@@ -102,6 +106,7 @@ class NetHubApp:
         u = self.ui.entry_user.get()
         p = self.ui.entry_pass.get()
         if u and p:
+            self.stored_password = p  # Store for FTP
             self.send_packet(f"LOGIN|{u}|{p}")
 
     def do_register(self):
@@ -175,6 +180,26 @@ class NetHubApp:
             self.game_window = TicTacToeWindow(self.root, self.send_packet, self.username)
         else:
             self.game_window.top.lift()
+
+    # --- FTP Browser ---
+    def open_ftp(self):
+        """Open FTP browser window"""
+        if not self.username or not self.stored_password:
+            from tkinter import messagebox
+            messagebox.showwarning("FTP", "Please login first to use FTP.")
+            return
+        
+        if self.ftp_window is None or not tk.Toplevel.winfo_exists(self.ftp_window.top):
+            self.ftp_window = FTPBrowserWindow(
+                self.root, 
+                self.username, 
+                self.stored_password,
+                host='127.0.0.1',
+                port=2121,
+                send_packet_func=self.send_packet
+            )
+        else:
+            self.ftp_window.top.lift()
 
     # --- Display Logic ---
     def add_chat(self, user, content, type="msg"):

@@ -88,7 +88,7 @@ class NetHubUI:
                   bg=COLORS["success"], fg="white", activebackground="#1e824c", activeforeground="white",
                   font=("Segoe UI", 12, "bold"), relief="flat", cursor="hand2").pack(fill="x", ipady=10, pady=40)
 
-    def create_chat_frame(self, parent, on_speed, on_game, on_upload, on_send, on_emoji):
+    def create_chat_frame(self, parent, on_speed, on_game, on_upload, on_send, on_emoji, on_ftp=None):
         header_frame = tk.Frame(parent, bg=COLORS["bg_dark"], height=55, padx=15)
         header_frame.pack(fill="x")
         header_frame.pack_propagate(False)
@@ -108,6 +108,8 @@ class NetHubUI:
         create_tool_btn("📊 Speed", on_speed, COLORS["warning"]).pack(side="left")
         create_tool_btn("🎮 Game", on_game, COLORS["success"]).pack(side="left")
         create_tool_btn("📁 Upload", on_upload, COLORS["primary"]).pack(side="left")
+        if on_ftp:
+            create_tool_btn("💾 Storage", on_ftp, "#00d4ff").pack(side="left")
 
         # Content Area (Chat + Sidebar)
         content_frame = tk.Frame(parent, bg=COLORS["bg_dark"])

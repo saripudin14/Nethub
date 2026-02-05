@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+.eggs/
+*.manifest
+*.spec
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# FTP user data (contains uploaded files)
+ftp_data/
+
+# Server shared files (test/sample files)
+server_files/
+
+# User credentials (sensitive data)
+users.json
+
+# Files metadata (generated at runtime)
+files_metadata.json
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# LaTeX auxiliary files (if any)
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.pdf
+
+# Image/diagram files (optional - uncomment if you don't want to include)
+# *.png
+# *.dot
