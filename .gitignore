@@ -64,7 +64,3 @@ desktop.ini
 *.fdb_latexmk
 *.fls
 *.pdf
-
-# Image/diagram files (optional - uncomment if you don't want to include)
-# *.png
-# *.dot
